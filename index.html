@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1b1446">
+<title>Psychological Question</title>
+<style>
+:root{
+  --text:#fff;
+  --muted:rgba(255,255,255,.72);
+  --ease:cubic-bezier(.22,.8,.24,1);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%}
+body{
+  font-family:"Noto Sans Thai","Sarabun",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  color:var(--text);
+  background:#150f3a;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ---------- Background (transform-only animation, no blur filters) ---------- */
+.bg{position:fixed;inset:0;overflow:hidden;z-index:0;
+  background:linear-gradient(160deg,#1b1446 0%,#2a1b6b 45%,#0f3a6b 100%)}
+.blob{position:absolute;border-radius:50%;will-change:transform;
+  width:70vmax;height:70vmax;opacity:.75}
+.b1{left:-25vmax;top:-20vmax;background:radial-gradient(circle,rgba(255,92,170,.65),rgba(255,92,170,0) 65%);animation:f1 26s ease-in-out infinite alternate}
+.b2{right:-30vmax;top:10vmax;background:radial-gradient(circle,rgba(70,190,255,.6),rgba(70,190,255,0) 65%);animation:f2 32s ease-in-out infinite alternate}
+.b3{left:5vmax;bottom:-35vmax;background:radial-gradient(circle,rgba(150,110,255,.65),rgba(150,110,255,0) 65%);animation:f3 28s ease-in-out infinite alternate}
+@keyframes f1{to{transform:translate3d(18vmax,12vmax,0) scale(1.1)}}
+@keyframes f2{to{transform:translate3d(-16vmax,10vmax,0) scale(1.15)}}
+@keyframes f3{to{transform:translate3d(14vmax,-12vmax,0) scale(1.05)}}
+
+/* ---------- Layout ---------- */
+.app{position:relative;z-index:1;min-height:100dvh;display:flex;align-items:center;justify-content:center;
+  padding:72px 16px 32px}
+#screen{width:100%;max-width:560px}
+
+/* ---------- Liquid glass ---------- */
+.glass{
+  position:relative;border-radius:28px;
+  background:linear-gradient(135deg,rgba(255,255,255,.24),rgba(255,255,255,.07));
+  -webkit-backdrop-filter:blur(16px) saturate(160%);
+  backdrop-filter:blur(16px) saturate(160%);
+  border:1px solid rgba(255,255,255,.34);
+  box-shadow:0 10px 34px rgba(5,0,40,.35),
+    inset 0 1px 0 rgba(255,255,255,.55),
+    inset 0 -1px 0 rgba(255,255,255,.12);
+}
+.glass::before{ /* specular highlight */
+  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(115deg,rgba(255,255,255,.35) 0%,rgba(255,255,255,0) 38%);
+  opacity:.55;
+}
+.card{padding:28px 22px;text-align:center}
+@media(min-width:520px){.card{padding:36px 34px}}
+
+/* ---------- Screen enter ---------- */
+.enter{animation:enter .55s var(--ease) both}
+@keyframes enter{from{opacity:0;transform:translate3d(0,18px,0) scale(.98)}to{opacity:1;transform:none}}
+.leave{animation:leave .25s ease-in both}
+@keyframes leave{to{opacity:0;transform:translate3d(0,-10px,0) scale(.98)}}
+
+/* ---------- Typography ---------- */
+h1{margin:14px 0 4px;font-size:clamp(24px,6vw,32px);font-weight:700;letter-spacing:.2px}
+h2{margin:0 0 6px;font-size:clamp(19px,4.8vw,23px);line-height:1.45;font-weight:600}
+.sub{margin:0 0 22px;color:var(--muted);font-size:14px}
+.small{font-size:12.5px;color:var(--muted)}
+
+/* ---------- Buttons ---------- */
+.btn{
+  position:relative;display:block;width:100%;cursor:pointer;
+  font:inherit;color:#fff;text-align:center;
+  padding:14px 18px;border-radius:18px;
+  background:linear-gradient(135deg,rgba(255,255,255,.28),rgba(255,255,255,.1));
+  border:1px solid rgba(255,255,255,.4);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 4px 14px rgba(5,0,40,.25);
+  transition:transform .18s var(--ease),background .25s,box-shadow .25s;
+  will-change:transform;
+  -webkit-user-select:none;user-select:none;
+}
+.btn:active{transform:scale(.95)}
+@media(hover:hover){.btn:hover{background:linear-gradient(135deg,rgba(255,255,255,.38),rgba(255,255,255,.14));box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 8px 22px rgba(5,0,40,.3)}}
+.btn.primary{background:linear-gradient(135deg,rgba(255,120,200,.65),rgba(110,140,255,.6));font-weight:600}
+.btn:focus-visible,.seg button:focus-visible,input:focus-visible{outline:2px solid #fff;outline-offset:2px}
+
+/* ---------- Language switch ---------- */
+.seg{position:fixed;top:max(12px,env(safe-area-inset-top));right:max(12px,env(safe-area-inset-right));z-index:5;
+  display:flex;padding:3px;border-radius:999px}
+.seg button{font:inherit;font-size:12px;font-weight:600;color:var(--muted);background:transparent;border:0;
+  padding:6px 11px;border-radius:999px;cursor:pointer;transition:background .25s,color .25s,transform .15s}
+.seg button:active{transform:scale(.9)}
+.seg button.on{color:#fff;background:rgba(255,255,255,.28);box-shadow:inset 0 1px 0 rgba(255,255,255,.5)}
+
+/* ---------- Intro ---------- */
+.iconwrap{display:flex;flex-direction:column;align-items:center;transition:transform 1.4s var(--ease);will-change:transform}
+.iconwrap.moved{transform:translate3d(clamp(-70px,-14vw,-30px),0,0)}
+.icon{width:96px;height:96px;border-radius:50%;display:grid;place-items:center;cursor:pointer;border:0;padding:0;color:#fff;
+  background:radial-gradient(circle at 30% 25%,rgba(255,255,255,.55),rgba(255,255,255,.12) 60%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 10px 28px rgba(5,0,40,.4);
+  animation:bob 4.5s ease-in-out infinite;transition:transform .2s var(--ease)}
+.icon:active{transform:scale(.9)}
+@keyframes bob{50%{transform:translate3d(0,-6px,0)}}
+.icon svg{width:50px;height:50px}
+.secret{max-width:230px;margin-top:12px;font-size:13.5px;color:var(--muted);opacity:0;transform:translate3d(0,-6px,0);
+  transition:opacity .9s .5s,transform .9s .5s var(--ease);min-height:0;height:0;overflow:visible}
+.iconwrap.moved .secret{opacity:1;transform:none;height:auto;min-height:40px}
+.credit{margin:6px 0 20px;font-size:13.5px;color:var(--muted)}
+.credit b{color:#fff;font-weight:600}
+input.name{
+  width:100%;font:inherit;font-size:16px;color:#fff;text-align:center;
+  padding:14px 16px;margin-bottom:14px;border-radius:18px;outline:none;
+  background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.38);
+  box-shadow:inset 0 2px 8px rgba(5,0,40,.22);transition:background .25s,border-color .25s,box-shadow .25s}
+input.name::placeholder{color:rgba(255,255,255,.55)}
+input.name:focus{background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.7)}
+.shake{animation:shake .4s}
+@keyframes shake{20%,60%{transform:translateX(-7px)}40%,80%{transform:translateX(7px)}}
+.stack{display:grid;gap:12px}
+
+/* ---------- Quiz ---------- */
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-size:13px;color:var(--muted)}
+.bar{height:6px;border-radius:99px;background:rgba(255,255,255,.18);overflow:hidden;margin-bottom:20px}
+.bar i{display:block;height:100%;width:100%;border-radius:inherit;transform-origin:left;will-change:transform;
+  background:linear-gradient(90deg,#ff7cc8,#7aa2ff);transition:transform .6s var(--ease)}
+.qtext{text-align:left}
+.qtext .sit{margin:0 0 4px}
+.qtext .ask{color:#ffd9f0;font-weight:500}
+.hint{min-height:20px;margin:10px 0 8px;text-align:center;font-size:12.5px;color:#ffd9f0;opacity:0;transform:translate3d(0,4px,0);transition:opacity .25s,transform .25s}
+.hint.show{opacity:1;transform:none}
+.opts{display:grid;gap:11px}
+.opt{text-align:left;padding:15px 16px;line-height:1.45;transition:transform .45s var(--ease),background .25s,box-shadow .25s}
+.opt.chosen{background:linear-gradient(135deg,rgba(255,120,200,.7),rgba(110,140,255,.65));animation:pop .35s var(--ease)}
+@keyframes pop{50%{transform:scale(1.04)}}
+.opts.lock .opt:not(.chosen){opacity:.55;transition:opacity .3s}
+
+/* ---------- Result ---------- */
+.badge{display:inline-block;padding:5px 14px;border-radius:99px;font-size:12.5px;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.35);margin-bottom:10px}
+.emoji{font-size:54px;line-height:1;margin:2px 0 6px;animation:bob 4.5s ease-in-out infinite}
+.desc{margin:10px 0 18px;line-height:1.7;color:rgba(255,255,255,.9);font-size:15px}
+.meters{display:grid;gap:9px;margin:0 0 18px;text-align:left}
+.meter{display:grid;grid-template-columns:96px 1fr 38px;align-items:center;gap:8px;font-size:12.5px;color:var(--muted)}
+.meter .tr{height:8px;border-radius:99px;background:rgba(255,255,255,.16);overflow:hidden}
+.meter .tr i{display:block;height:100%;width:100%;border-radius:inherit;transform-origin:left;transform:scaleX(0);will-change:transform;
+  background:linear-gradient(90deg,#ff7cc8,#7aa2ff);transition:transform 1s .25s var(--ease)}
+.privacy{margin:0 0 16px;font-size:12.5px;color:var(--muted)}
+
+/* ---------- Tap ripples (pooled) ---------- */
+.rip{position:fixed;left:0;top:0;width:90px;height:90px;margin:-45px 0 0 -45px;border-radius:50%;pointer-events:none;z-index:9;opacity:0;
+  background:radial-gradient(circle,rgba(255,255,255,.55),rgba(255,255,255,.12) 55%,rgba(255,255,255,0) 70%);will-change:transform,opacity}
+
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
+</style>
+</head>
+<body>
+<div class="bg" aria-hidden="true"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div></div>
+
+<div class="seg glass" id="seg" role="group" aria-label="Language">
+  <button data-l="th" type="button">TH</button><button data-l="en" type="button">EN</button>
+</div>
+
+<main class="app"><div id="screen"></div></main>
+
+<script>
+(function(){
+"use strict";
+
+/* =================== DATA =================== */
+// 50 situations x 10 framings = 500 unique questions. Styles: A=Analyst, I=Intuitive, S=Connector, B=Adventurer
+const SIT=[
+["ได้ข้อเสนองานใหม่ เงินเดือนสูงกว่าแต่ต้องย้ายเมือง","You got a higher-paying job offer, but it means moving cities."],
+["มีเงินก้อนหนึ่ง จะเก็บ ลงทุน หรือใช้ท่องเที่ยวดี","You have a lump of money: save it, invest it, or travel?"],
+["เพื่อนสองคนทะเลาะกัน และต่างก็ขอให้คุณเข้าข้าง","Two friends are fighting and both want you on their side."],
+["ต้องเลือกระหว่างเรียนต่อกับเริ่มทำงานเลย","You must choose between further study and starting work now."],
+["มีร้านอาหารใหม่กับร้านประจำที่ชอบ จะไปร้านไหนดี","A new restaurant or your favorite regular spot: which one?"],
+["มีโปรเจกต์ที่เสี่ยงล้มเหลว แต่ถ้าสำเร็จจะใหญ่มาก","A risky project could fail, but would be huge if it works."],
+["ต้องเลือกซื้อของชิ้นใหญ่ที่ราคาแพงมาก","You need to buy a very expensive big-ticket item."],
+["มีคนชวนไปทริปกะทันหัน ออกเดินทางพรุ่งนี้เช้า","Someone invites you on a spontaneous trip leaving tomorrow morning."],
+["ต้องบอกความจริงที่อาจทำให้คนอื่นเสียใจ","You have to tell a truth that may hurt someone."],
+["คุณถูกขอให้รับหน้าที่หัวหน้าทีม","You're asked to become the team leader."],
+["อยากเปลี่ยนสายอาชีพทั้งที่ทำมานาน","You want to change careers after years in your field."],
+["ต้องเลือกที่อยู่ ระหว่างใกล้ที่ทำงานกับบรรยากาศดีกว่า","Choose a home: close to work, or a nicer atmosphere."],
+["ถูกชวนไปงานสังสรรค์ แต่คุณเหนื่อยมาก","You're invited to a party but you're exhausted."],
+["เจอของมีค่าตกอยู่ โดยไม่มีใครเห็น","You find something valuable on the ground and nobody saw."],
+["ต้องเลือกระหว่างงานที่รักกับงานที่มั่นคง","Choose between work you love and work that's stable."],
+["อยากเริ่มธุรกิจเล็กๆ ของตัวเอง","You want to start a small business of your own."],
+["มีคนให้คำแนะนำที่ขัดกับความรู้สึกของคุณ","Someone gives advice that clashes with how you feel."],
+["ต้องตัดสินใจว่าจะให้อภัยคนที่เคยทำผิดต่อคุณไหม","Decide whether to forgive someone who wronged you."],
+["งานด่วนใกล้ถึงกำหนด แต่ยังมีรายละเอียดที่ไม่มั่นใจ","An urgent deadline, but you're unsure about some details."],
+["มีโอกาสไปใช้ชีวิตต่างประเทศคนเดียวเป็นเวลานาน","A chance to live abroad alone for a long time."],
+["ต้องเลือกมือถือหรือคอมเครื่องใหม่จากหลายรุ่น","You must pick a new phone or computer from many models."],
+["เพื่อนขอยืมเงินจำนวนไม่น้อย","A friend asks to borrow a significant sum."],
+["ต้องเลือกแผนออกกำลังกายใหม่ที่จะทำต่อเนื่อง","Choose a new fitness plan you'd actually stick with."],
+["มีคนชวนลงทุนที่ผลตอบแทนดูดีเกินจริง","You're pitched an investment with suspiciously high returns."],
+["มีงานสองอย่างเข้ามาพร้อมกัน แต่ทำได้เพียงอย่างเดียว","Two tasks arrive at once and you can only do one."],
+["ต้องเลือกว่าจะอยู่เมืองเกิดหรือไปเริ่มใหม่ที่อื่น","Stay in your hometown or start fresh somewhere else."],
+["ต้องเลือกของขวัญให้คนสำคัญ","You need to pick a gift for someone important."],
+["เจอทางแยกระหว่างเดินทาง และแผนที่ใช้ไม่ได้","You reach a fork in the road and your map isn't working."],
+["มีคนชวนร่วมทีมทำเกมหรือแอป แต่ยังไม่มีรายได้","Someone invites you to join a game/app team with no pay yet."],
+["ต้องเลือกระหว่างพักผ่อนกับทำตามเป้าหมายต่อ","Rest, or keep pushing toward your goal?"],
+["อยากบอกความรู้สึกกับคนที่แอบชอบ","You want to confess your feelings to your crush."],
+["ต้องตัดสินใจเลิกนิสัยที่ติดมานาน","Decide to quit a long-standing habit."],
+["ถูกเสนอให้เลื่อนตำแหน่ง แต่งานหนักขึ้นมาก","Offered a promotion with a much heavier workload."],
+["ในที่ประชุม ทุกคนเห็นด้วยกับแผนที่คุณรู้สึกว่าไม่ใช่","In a meeting, everyone backs a plan you feel is wrong."],
+["เลือกได้เพียงหนึ่งทักษะใหม่ที่อยากเรียน","You can pick only one new skill to learn."],
+["แผนที่วางไว้นานไม่เป็นไปตามคาด","A long-held plan isn't working out."],
+["เพื่อนร่วมงานเสนอสลับกะหรือวันหยุดกับคุณ","A coworker offers to swap shifts or days off."],
+["ต้องเลือกว่าจะเล่าความลับของตัวเองให้เพื่อนใหม่ฟังไหม","Decide whether to share a personal secret with a new friend."],
+["ต้องจัดลำดับความสำคัญของงานที่ต้องทำ 10 อย่าง","Prioritize a to-do list of ten items."],
+["ต้องตัดสินใจว่าจะลองสิ่งที่ไม่เคยทำมาก่อนไหม","Decide whether to try something you've never done."],
+["เห็นคนทำผิดกฎเล็กๆ ต่อหน้าคุณ","You witness someone breaking a small rule."],
+["ต้องเลือกร่วมทีมกับคนที่เก่งแต่เข้ากันยาก","Team up with someone skilled but hard to get along with."],
+["ได้ข้อเสนอฟรีแลนซ์ที่ค่าตอบแทนไม่แน่นอน","A freelance offer with uncertain pay."],
+["คนในครอบครัวอยากให้คุณเลือกทางที่ต่างจากที่ใจต้องการ","Family wants you to choose a path different from what your heart wants."],
+["ต้องเลือกระหว่างทางที่ปลอดภัยกับทางที่แปลกใหม่","A safe option versus an unusual new one."],
+["คุณมีเวลาว่างทั้งวัน จะใช้อย่างไรดี","You have one entire free day: how do you spend it?"],
+["ต้องเลือกว่าจะแก้ปัญหาเองหรือขอความช่วยเหลือ","Fix a problem yourself or ask for help?"],
+["ได้รับคำวิจารณ์ที่ตรงและเจ็บ","You receive blunt, painful criticism."],
+["ต้องเลือกเส้นทางชีวิตที่ไม่มีใครในครอบครัวเคยเดิน","Choose a life path nobody in your family has taken."],
+["ต้องตัดสินใจเรื่องใหญ่ภายใน 24 ชั่วโมง","A major decision is due within 24 hours."]
+];
+
+const FR=[
+{q:["ก้าวแรกของคุณคืออะไร?","What's your first move?"],
+ A:["รวบรวมข้อมูลและเปรียบเทียบข้อดีข้อเสียก่อน","Gather info and weigh the pros and cons first"],
+ I:["หลับตา ฟังความรู้สึกข้างใน","Pause and listen to my gut feeling"],
+ S:["ไปปรึกษาคนที่ไว้ใจ","Talk it over with someone I trust"],
+ B:["ลงมือลองเลย แล้วค่อยปรับ","Just try it and adjust along the way"]},
+{q:["อะไรคือตัวชี้ขาดตอนตัดสินใจจริงๆ?","What tips the final decision?"],
+ A:["ตัวเลขและเหตุผลที่ชัดเจน","Clear numbers and solid logic"],
+ I:["ความรู้สึกว่ามัน ‘ใช่’","The sense that it just feels right"],
+ S:["ผลกระทบต่อคนที่ฉันรัก","How it affects the people I care about"],
+ B:["โอกาสที่อาจยิ่งใหญ่ที่สุด","The chance at the biggest upside"]},
+{q:["ถ้าเริ่มลังเลหรือติดอยู่ คุณจะทำอย่างไร?","If you feel stuck, what do you do?"],
+ A:["เขียนทางเลือกออกมาเป็นตาราง","Write the options out in a table"],
+ I:["พักสักหน่อย แล้วรอให้คำตอบผุดขึ้นเอง","Step away and let the answer surface"],
+ S:["ขอฟังความเห็นจากหลายๆ คน","Ask several people for their view"],
+ B:["เลือกสักทางแล้วไปต่อ ไม่รอแล้ว","Pick one and move on, no more waiting"]},
+{q:["ถ้าเหลือเวลาตัดสินใจน้อยมาก คุณจะ…","If you have very little time, you…"],
+ A:["ตัดตัวเลือกแย่ๆ ออก แล้วเลือกที่ดีที่สุดตามเกณฑ์","Cut the weak options and pick the best by criteria"],
+ I:["เชื่อสัญชาตญาณแรกที่เกิดขึ้น","Trust the first instinct that shows up"],
+ S:["โทรหาคนที่เข้าใจเรื่องนี้ที่สุด","Call whoever understands this best"],
+ B:["เลือกทางที่ท้าทายที่สุด","Take the boldest path"]},
+{q:["หลังตัดสินใจไปแล้ว คุณมักรู้สึกอย่างไร?","After deciding, how do you usually feel?"],
+ A:["ทบทวนว่าเหตุผลของฉันยังถูกต้องไหม","I re-check whether my reasoning holds up"],
+ I:["สงบ ถ้ามันตรงกับใจ","Calm, if it fits what my heart wanted"],
+ S:["กังวลว่าคนอื่นจะรู้สึกอย่างไร","Concerned about how others will feel"],
+ B:["ตื่นเต้นและพร้อมไปต่อ","Excited and ready to go"]},
+{q:["ถ้าผลลัพธ์ออกมาแย่ คุณจะ…","If it turns out badly, you…"],
+ A:["วิเคราะห์ว่าพลาดตรงไหน จะได้ไม่ซ้ำ","Analyze what went wrong so it won't repeat"],
+ I:["ยอมรับ และเชื่อว่าทุกอย่างมีเหตุผลของมัน","Accept it, trusting everything has a reason"],
+ S:["ระบายกับคนใกล้ตัวและขอกำลังใจ","Share with close ones and lean on their support"],
+ B:["ลุกขึ้นมาลองใหม่ทันที","Get right back up and try again"]},
+{q:["คุณให้น้ำหนักกับอะไรมากที่สุด?","What do you weigh the most?"],
+ A:["ความคุ้มค่าและความเสี่ยงที่คำนวณได้","Value and calculable risk"],
+ I:["ความรู้สึกลึกๆ และจังหวะของชีวิต","Inner feeling and the timing of life"],
+ S:["ความสัมพันธ์และความสบายใจของทุกคน","Relationships and everyone's comfort"],
+ B:["ประสบการณ์ใหม่และการเติบโต","New experiences and growth"]},
+{q:["เพื่อนสนิทจะบอกว่าคุณมักทำอะไร?","What would a close friend say you tend to do?"],
+ A:["คิดเยอะ วางแผนละเอียด","Think a lot and plan in detail"],
+ I:["ทำตามใจตัวเอง และมักจะถูก","Follow my gut, and usually be right"],
+ S:["ถามทุกคนก่อนเสมอ","Ask everyone first, always"],
+ B:["พุ่งไปก่อน แล้วค่อยแก้ปัญหาทีหลัง","Leap first and sort it out later"]},
+{q:["ถ้าข้อมูลไม่ครบ คุณจะทำอย่างไร?","If the information is incomplete, what do you do?"],
+ A:["หาข้อมูลเพิ่มจนมั่นใจ","Keep researching until I'm confident"],
+ I:["อ่านสถานการณ์จากสัญญาณเล็กๆ","Read the situation from small signals"],
+ S:["ถามคนที่เคยผ่านเรื่องแบบนี้มาแล้ว","Ask someone who's been through this before"],
+ B:["เดินหน้าทั้งที่ไม่ครบ ยอมรับความเสี่ยง","Go ahead anyway and accept the risk"]},
+{q:["คุณอยากได้อะไรจากการตัดสินใจครั้งนี้มากที่สุด?","What do you most want out of this decision?"],
+ A:["ความมั่นใจว่ามันสมเหตุสมผล","Certainty that it makes sense"],
+ I:["ความรู้สึกว่าได้เป็นตัวของตัวเอง","Feeling true to myself"],
+ S:["ความอบอุ่นและการยอมรับจากคนรอบข้าง","Warmth and acceptance from the people around me"],
+ B:["ความตื่นเต้นและเรื่องราวไว้เล่าต่อ","Thrill and a story worth telling"]}
+];
+
+const TYPES={
+ A:{e:"🧠",n:["นักวิเคราะห์","The Analyst"],
+    d:["คุณตัดสินใจด้วยเหตุผลและข้อมูล ชอบเห็นภาพรวมก่อนลงมือ ทำให้พลาดน้อยและเป็นที่พึ่งเวลาคนอื่นสับสน ข้อควรระวังคือบางครั้งคิดนานเกินไปจนโอกาสผ่านไป ลองให้เวลาตัวเองตัดสินใจแบบ ‘ดีพอ’ บ้าง",
+       "You decide with logic and data and like to see the big picture first. You rarely slip up and people lean on you when things get confusing. Watch out for overthinking, since opportunities can pass. Try 'good enough' decisions once in a while."]},
+ I:{e:"🔮",n:["นักสัญชาตญาณ","The Intuitive"],
+    d:["คุณฟังเสียงข้างในและอ่านบรรยากาศเก่ง มักรู้ว่าอะไรใช่โดยไม่ต้องอธิบายมาก ทำให้ตัดสินใจได้ลื่นไหล ข้อควรระวังคือบางครั้งอธิบายเหตุผลให้คนอื่นเข้าใจยาก ลองจดเหตุผลสั้นๆ ไว้เป็นตัวช่วย",
+       "You listen to your inner voice and read the room well. You often know what fits without much explanation, so decisions flow. The catch is that your reasons can be hard to explain to others. Jotting down a few short reasons can help."]},
+ S:{e:"🤝",n:["ผู้ใส่ใจผู้คน","The Connector"],
+    d:["คุณให้ความสำคัญกับความสัมพันธ์และความรู้สึกของคนรอบข้าง เป็นคนรับฟังและเข้าใจคนง่าย ทำให้คนรอบตัวไว้ใจ ข้อควรระวังคือบางครั้งเอาใจคนอื่นจนลืมสิ่งที่ตัวเองต้องการ อย่าลืมถามใจตัวเองด้วยนะ",
+       "You value relationships and the feelings of people around you. You listen well and understand others, which earns trust. Just be careful not to please everyone so much that you forget what you want. Ask yourself too."]},
+ B:{e:"🚀",n:["นักผจญภัย","T
